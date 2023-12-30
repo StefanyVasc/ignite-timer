@@ -17,17 +17,18 @@ interface CyclesState {
 
 interface ActionState {
   type: string
-  payload: {
-    newCycle: Cycle
-  }
+  payload?: undefined | { newCycle: Cycle }
 }
 
 export function cyclesReducer(state: CyclesState, action: ActionState) {
   switch (action.type) {
     case ActionTypes.ADD_NEW_CYCLE:
       return produce(state, (draft) => {
-        draft.cycles.push(action.payload.newCycle)
-        draft.activeCycleId = action.payload.newCycle.id
+        const newCycle = action.payload?.newCycle
+        if (newCycle) {
+          draft.cycles.push(newCycle)
+          draft.activeCycleId = newCycle.id
+        }
       })
 
     case ActionTypes.INTERRUPT_CURRENT_CYCLE: {
